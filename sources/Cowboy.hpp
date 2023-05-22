@@ -17,5 +17,7 @@ namespace ariel{
 
             std::string print();
 
+            int getBullets() const;
+
     };
 }

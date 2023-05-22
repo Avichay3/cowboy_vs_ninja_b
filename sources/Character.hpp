@@ -18,13 +18,15 @@ namespace ariel{
 
         bool isAlive();
 
-        double distance(Point *other);
+        double distance(Character *other);
 
-        void hit(int);
+        virtual void hit(int); //virtual for the ability to ovveride it
 
         std::string getName() const; 
 
-        Point getLocation() ;
+        int get_hit_points() const;
+
+        Point getLocation() const;
 
         virtual std::string print(); //virtual for the ability to ovveride it
         

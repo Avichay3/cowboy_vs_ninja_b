@@ -6,8 +6,15 @@ namespace ariel{
 
         public:
         Point(double x, double y); // constructor with two arguments
-        double distance(Point &other);
+
+        double distance(const Point &other) const;
+
         void print();
+
         Point moveTowards(Point &source, Point &destination, double distance);
+
+        double getX() const;
+
+        double getY() const;
     };
 }

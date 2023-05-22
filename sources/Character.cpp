@@ -9,26 +9,35 @@ _name(name), _location(location), _hit_points(hit_points) {} //first constructor
 Character::Character(std::string name, Point &location): _name(name), _location(location){}
 
 bool Character::isAlive() {
-	return false;
+	return this->_hit_points > 0;
 }
 
-double ariel::Character::distance(Point *other){
-    return (double)1;
+double Character::distance(Character *other){
+    Point p1 = this->getLocation();
+    Point p2 = other->getLocation();
+    return p1.distance(p2);
 }
 
 
-void Character::hit(int){
-    std::cout<<"hit"<<std::endl;
+void Character::hit(int hit_points){
+    if(hit_points < 0){
+        throw ("hit points cannot be a negative number");
+    }
+    this->_hit_points = this->_hit_points - hit_points;
 }
 
 std::string Character::getName() const{
 	return _name;
 }
 
-Point Character::getLocation() {
-    return Point(1.0,2.0);
+Point Character::getLocation() const{
+    return _location;
 }
 
 std::string Character::print(){
-    return "";
+    return " " ;
+}
+
+int Character::get_hit_points() const{
+    return this->_hit_points;
 }
