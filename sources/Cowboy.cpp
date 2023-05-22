@@ -1,19 +1,23 @@
 #include "Character.hpp"
 #include "Cowboy.hpp"
+#include <string.h>
 using namespace ariel;
 
-Cowboy::Cowboy(std::string name, Point location) : Character(name, location, 110), _num_of_bullets{} //initialization list
+Cowboy::Cowboy(std::string name, Point location) : Character(name, location, 110), _num_of_bullets(0){} //initialization list
 
-void Cowboy::shoot(Character* other){
-    if ((this->isAlive() == false) || (other->isAlive() == false)){
-        throw ("Cowboy can't attack when he or his enemy is dead");
+void Cowboy::shoot(Character* other)
+{
+    if ((this->isAlive() == false) || (!other->isAlive())){ // two different ways to say is alive is false
+        throw std::runtime_error("Cowboy can't attack when he or his enemy is dead");
     }
     if (this == other){
-        throw ("Cowboy can't attack himself");
+        throw std::runtime_error("Cowboy can't attack himself");
     }
-    if (this->hasBullets()){
+    if (this->hasBullets() == true){
         other->hit(10);
-        this->_num_of_bullets = _num_of_bullets - 1;
+        this->_num_of_bullets--;
+    }else{
+        throw std::runtime_error("Cowboy has no bullets for shooting");
     }
 }
 
