@@ -11,7 +11,7 @@ void Cowboy::shoot(Character* other)
         throw std::runtime_error("Cowboy can't attack when he or his enemy is dead");
     }
     if (this == other){
-        throw std::runtime_error("Cowboy can't attack himself");
+        throw std::runtime_error("Cowboy can't shoot himself");
     }
     if (this->hasBullets() == true){
         other->hit(10);
@@ -39,10 +39,10 @@ void Cowboy::reload(){
 
 std::string Cowboy::print(){
     std::string print = "";
-    print = print + "(" + this->getName() + ")";
+    print = print + "Cowboy (" + this->getName() + ")";
     if (this->isAlive() == true){
         print += " hit_points: " + std::to_string(this->get_hit_points());
     }
-    print += " The location: (" + std::to_string(this->getLocation().getX()) + std::to_string(this->getLocation().getY())+ ")";
+    print += " The location: (" + std::to_string(this->getLocation().getX()) + ", " + std::to_string(this->getLocation().getY())+ ")";
     return print;
 }
