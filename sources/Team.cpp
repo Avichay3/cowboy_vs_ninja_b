@@ -48,7 +48,42 @@ void Team::attack(Team *other){
     if (victim== nullptr){
         return;
     }
-    
+      for (auto warrior : warriors){
+        if ((other->stillAlive() == 0) || (this->stillAlive() == 0)){
+            return;
+        }
+        if(warrior->isAlive() == false){
+            continue;
+        }
+        if(victim->isAlive() == false){
+            victim = closest_to_leader(other, victim);
+        }
+        if((dynamic_cast<Cowboy *>(warrior) != nullptr) && (dynamic_cast<Cowboy *>(warrior)->hasboolets())){
+            dynamic_cast<Cowboy *>(warrior)->shoot(victim); // Cowboy who has bullets shoots victim
+        }
+        else if (dynamic_cast<Cowboy *>(warrior) != nullptr){
+            dynamic_cast<Cowboy *>(warrior)->reload(); // Cowboy without bullets reload his gun
+        }
+      }
+
+      for (auto warrior : warriors){
+        if ((other->stillAlive() == 0) || (this->stillAlive() == 0)){
+            return;
+        }
+        if (warrior->isAlive() == false){
+            continue;
+        }
+        if (victim->isAlive() == false){
+            victim = closest_to_leader(other, victim);
+        }
+        if (dynamic_cast<Ninja *>(warrior) != nullptr && warrior->distance(victim) < 1){
+            dynamic_cast<Ninja *>(warrior)->slash(victim); // Ninja around 1 meter of victim kills him
+        }
+        else if (dynamic_cast<Ninja *>(warrior) != nullptr){
+            dynamic_cast<Ninja *>(warrior)->move(victim); // Ninja further than 1 meter from victim get closer
+        }
+    } 
+
 }
 
 int Team::stillAlive(){return 0;}
