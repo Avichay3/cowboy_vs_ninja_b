@@ -41,7 +41,7 @@ void Team::attack(Team *other){
     if(_leader->isAlive() == false){
         _leader = closest_to_leader(this, _leader);
     }
-    if(_leader = nullptr){
+    if(_leader == nullptr){
         return;
     }
     Character* victim = other->closest_to_leader(this, _leader); // choose closest victim to leader of other team
@@ -98,12 +98,12 @@ int Team::stillAlive(){
 
 void Team::print(){
     for (int i = warriors.size() - 1; i >= 0; --i){
-        if (Cowboy *cowboy = dynamic_cast<Cowboy*>(warriors[i])){ // Check if the character is a Cowboy
+        if (Cowboy *cowboy = dynamic_cast<Cowboy*>(warriors.at(i))){ // Check if the character is a Cowboy
             if (cowboy->isAlive() == true ){
                 std::cout << cowboy->print() << std::endl; // Print the Cowboy details
             }
         }
-        else if (Ninja *ninja = dynamic_cast<Ninja*>(warriors[i])){ // Check if the character is a Ninja
+        else if (Ninja *ninja = dynamic_cast<Ninja*>(warriors.at(i))){ // Check if the character is a Ninja
             if (ninja->isAlive() == true ){
                 std::cout << ninja->print() << std::endl;
             }
