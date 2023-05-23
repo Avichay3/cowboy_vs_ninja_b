@@ -86,7 +86,15 @@ void Team::attack(Team *other){
 
 }
 
-int Team::stillAlive(){return 0;}
+int Team::stillAlive(){
+    int num_of_warriors_alive = 0;
+    for(Character* warrior : warriors){
+        if(warrior->isAlive() == true){
+            num_of_warriors_alive++;    
+        }
+    }
+    return num_of_warriors_alive;
+}
 
 void Team::print(){return ;}
 
