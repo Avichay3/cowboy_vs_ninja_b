@@ -10,9 +10,23 @@ Team::Team(Character *leader) : _leader(leader){
     this->_leader->setInTeam(true);
 }
 
-Team::~Team (){}
+Team::~Team (){
+    for(int i = 0; i < warriors.size(); i++){
+        delete(warriors[i]);
+    }
+}
 
-void Team::add(Character *toAdd){return;}
+void Team::add(Character *toAdd){
+    
+    if (toAdd->IsInTeamAlready() == true){
+        throw std::runtime_error("this fighter is in the team already");
+    }
+    if (this->warriors.size() >= MAX_WARRIORS){
+        throw std::runtime_error("This team is full");
+    }
+    toAdd->setInTeam(true);
+    this->warriors.push_back(toAdd);
+}
 
 void Team::attack(Team *other){return;}
 

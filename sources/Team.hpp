@@ -8,6 +8,7 @@
 #include "Cowboy.hpp"
 #include "Point.hpp"
 #include <vector> // for the arrayList that gonna hold up to 10 warriors
+const int MAX_WARRIORS = 10;
 
 namespace ariel{
     class Team{
