@@ -13,7 +13,7 @@ Team::Team(Character *leader) : _leader(leader){
 
 Team::~Team (){
     for(int i = 0; i < warriors.size(); i++){
-        delete(warriors[i]);
+        delete(warriors.at(i));
     }
 }
 
