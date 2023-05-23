@@ -1,5 +1,6 @@
 #include "Team.hpp"
-using namespace ariel;
+#include <climits>
+namespace ariel{
 
 Team::Team(Character *leader) : _leader(leader){
     this->warriors.clear(); //clear the vectors at first step
@@ -17,7 +18,6 @@ Team::~Team (){
 }
 
 void Team::add(Character *toAdd){
-    
     if (toAdd->IsInTeamAlready() == true){
         throw std::runtime_error("this fighter is in the team already");
     }
@@ -28,9 +28,46 @@ void Team::add(Character *toAdd){
     this->warriors.push_back(toAdd);
 }
 
-void Team::attack(Team *other){return;}
+void Team::attack(Team *other){
+    if (other == nullptr){
+        throw std::invalid_argument("Team from other side must be with at least one character");
+    }
+    if(this->stillAlive() == 0){
+        throw std::invalid_argument("Team can't attack with zero warriors");
+    }
+     if (other == this){
+        throw std::invalid_argument("You can't kill warriors that in the same team");
+    }
+}
 
 int Team::stillAlive(){return 0;}
 
 void Team::print(){return ;}
 
+
+
+Character* Team::closest_to_leader(Team* team , Character *other){
+    if (other == nullptr) {
+        throw std::invalid_argument("Invalid leader pointer");
+    }
+    Point otherLocation = other->getLocation();
+    Character *temp = nullptr;
+    int maxValue = INT_MAX;
+    for (Character* warrior : team->getWarriors()){
+        if (warrior->getLocation().distance(otherLocation) < maxValue && warrior->isAlive()==true){
+                maxValue = warrior->getLocation().distance(otherLocation);
+                temp = warrior;
+        }
+    }
+    return temp;
+}
+
+
+
+
+
+
+std::vector<Character* > Team::getWarriors(){
+    return this->warriors;
+}
+}

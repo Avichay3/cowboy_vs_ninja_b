@@ -22,7 +22,8 @@ namespace ariel{
             virtual void attack(Team *other);
             virtual int stillAlive();
             virtual void print();
-
+            Character* closest_to_leader(Team *team, Character *other) ;
+            std::vector<Character* > getWarriors();
 
 
     };
