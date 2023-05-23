@@ -18,6 +18,10 @@ double Character::distance(Character *other){
     return p1.distance(p2);
 }
 
+bool Character::IsInTeamAlready() {
+    return this->_is_in_team_already;
+}
+
 
 void Character::hit(int hit_points){
     if(hit_points < 0){
@@ -40,4 +44,8 @@ std::string Character::print(){
 
 int Character::get_hit_points() const{
     return this->_hit_points;
+}
+
+void Character::setInTeam(bool b){
+    this->_is_in_team_already = b;
 }

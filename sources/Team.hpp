@@ -18,9 +18,9 @@ namespace ariel{
             Team(Character *leader); //constructor
             ~Team(); //destructor for the team object
             void add(Character *);
-            void attack(Team *other);
-            int stillAlive();
-            std::string print();
+            virtual void attack(Team *other);
+            virtual int stillAlive();
+            virtual void print();
 
 
 

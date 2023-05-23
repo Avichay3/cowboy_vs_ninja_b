@@ -11,7 +11,7 @@ namespace ariel{
 
             void shoot(Character *other);
 
-            bool hasBullets()const;
+            bool hasboolets()const;
 
             void reload();
 

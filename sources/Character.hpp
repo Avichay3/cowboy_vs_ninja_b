@@ -5,10 +5,11 @@
 
 namespace ariel{
     class Character{
-
+    private:
         Point &_location;
         int _hit_points;
         std::string _name;
+        bool _is_in_team_already = false;
 
 
     public:
@@ -29,6 +30,10 @@ namespace ariel{
         Point getLocation() const;
 
         virtual std::string print(); //virtual for the ability to ovveride it
+
+        virtual bool IsInTeamAlready();
+
+        virtual void setInTeam(bool);
         
 
 

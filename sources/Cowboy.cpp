@@ -13,7 +13,7 @@ void Cowboy::shoot(Character* other)
     if (this == other){
         throw std::runtime_error("Cowboy can't shoot himself");
     }
-    if (this->hasBullets() == true){
+    if (this->hasboolets() == true){
         other->hit(10);
         this->_num_of_bullets--;
     }else{
@@ -21,7 +21,7 @@ void Cowboy::shoot(Character* other)
     }
 }
 
-bool Cowboy::hasBullets() const {
+bool Cowboy::hasboolets() const {
     return this->_num_of_bullets > 0;
 }
 
