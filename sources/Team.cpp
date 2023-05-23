@@ -38,6 +38,17 @@ void Team::attack(Team *other){
      if (other == this){
         throw std::invalid_argument("You can't kill warriors that in the same team");
     }
+    if(_leader->isAlive() == false){
+        _leader = closest_to_leader(this, _leader);
+    }
+    if(_leader = nullptr){
+        return;
+    }
+    Character* victim = other->closest_to_leader(this, _leader); // choose closest victim to leader of other team
+    if (victim== nullptr){
+        return;
+    }
+    
 }
 
 int Team::stillAlive(){return 0;}
