@@ -96,7 +96,20 @@ int Team::stillAlive(){
     return num_of_warriors_alive;
 }
 
-void Team::print(){return ;}
+void Team::print(){
+    for (int i = warriors.size() - 1; i >= 0; --i){
+        if (Cowboy *cowboy = dynamic_cast<Cowboy*>(warriors[i])){ // Check if the character is a Cowboy
+            if (cowboy->isAlive() == true ){
+                std::cout << cowboy->print() << std::endl; // Print the Cowboy details
+            }
+        }
+        else if (Ninja *ninja = dynamic_cast<Ninja*>(warriors[i])){ // Check if the character is a Ninja
+            if (ninja->isAlive() == true ){
+                std::cout << ninja->print() << std::endl;
+            }
+        }
+    }
+}
 
 
 
