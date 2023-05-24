@@ -5,7 +5,7 @@
 
 namespace ariel{
     class Character{
-    private:
+    protected:
         Point _location;
         int _hit_points;
         std::string _name;

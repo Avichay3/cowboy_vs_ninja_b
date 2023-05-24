@@ -9,7 +9,7 @@ Character(name,location,hit_points),_speed(speed){} //constructor
 Ninja::Ninja(std::string name, Point location) : Character(name, location){}
 
 void Ninja::move(Character *other){
-    return;
+    this->_location = Point::moveTowards(this->getLocation(),other->getLocation(),this->_speed);
 }
 
 void Ninja::slash(Character *other){

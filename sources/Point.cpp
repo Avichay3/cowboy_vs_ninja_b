@@ -17,7 +17,7 @@ void Point::print(){
 /*this next function gets an source point and destination and also distance.
 The function return the closest point to the destination point that found 
 at most at the given distance from the point of the origin*/
-Point Point::moveTowards(Point &source, Point &destination, double distance){
+Point Point::moveTowards(const Point &source, const Point &destination, double distance){
     if(distance < 0)
         throw std::invalid_argument("distance cannot be smaller than 0");
     double distance2 = source.distance(destination); // distance between source to destination
