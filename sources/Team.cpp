@@ -29,59 +29,67 @@ void Team::add(Character *toAdd){
     this->warriors.push_back(toAdd);
 }
 
-void Team :: attack (Team* other) {
-    // Check if the enemy is null.
-    if (other == nullptr) {
-        throw std::invalid_argument("Other team can't be null");
+void Team::attack(Team *enemies){
+    if (enemies == nullptr){
+        throw std::invalid_argument("enemies must be with at least one character");
     }
-    // Check if this team trying to attack itself.
-    if (this == other) {
-        throw std::runtime_error("Team can't attack herself");
+    if (this->stillAlive() == 0 || enemies->stillAlive() == 0){
+        throw std::runtime_error("Team can't attack with no warriors");
     }
-    if (stillAlive() == 0 || other -> stillAlive() == 0) {
-        throw std::runtime_error("This team and the other team needs to be alive");
+    if (enemies == this){
+        throw std::invalid_argument("There is no internal kills");
     }
-    if (_leader -> isAlive() == false) {
-        _leader = closest_to_leader(this, _leader);
+    if ((_leader->isAlive() == false)){
+        _leader->setInTeam(false);
+        this->setLeader(closest_to_leader(this, _leader));
     }
-    Cowboy* current_cowboy;
-    Ninja* current_ninja;
-    Character* victim = closest_to_leader(other, _leader);
-    for (size_t i = 0; i < warriors.size() && victim -> isAlive(); i++) {
-        auto &temp_warrior = *warriors.at(i);
-        if (typeid(temp_warrior) == typeid(Cowboy)) {
-            current_cowboy = dynamic_cast <Cowboy*> (warriors.at(i));
-            if (current_cowboy -> isAlive()) {
-                if (current_cowboy -> hasboolets()) {
-                    current_cowboy -> shoot(victim);
-                    if (victim -> isAlive() == false) { // If victim dead, replace
-                        victim = closest_to_leader(other, _leader);
-                    }
-                }
-                else {
-                    current_cowboy -> reload();
-                }
-            }
+    if ((enemies->getLeader()->isAlive() == false)){
+        enemies->getLeader()->setInTeam(false);
+        enemies->setLeader(closest_to_leader(enemies, enemies->getLeader()));
+    }
+    if ((enemies->getLeader() == nullptr) || (this->getLeader() == nullptr)){
+        return;
+    }
+    Character *victim = closest_to_leader(enemies, this->_leader);
+    if (victim == nullptr){
+        return;
+    }
+    for (auto warrior : warriors){
+        if ((enemies->stillAlive() == 0) || (this->stillAlive() == 0)){
+            return;
+        }
+        if ((warrior->isAlive() == false)){
+            continue;
+        }
+        if((victim->isAlive() == false)){
+            victim = closest_to_leader(enemies, victim);
+        }
+        if ((dynamic_cast<Cowboy *>(warrior) != nullptr) && (dynamic_cast<Cowboy *>(warrior)->hasboolets())){
+            dynamic_cast<Cowboy *>(warrior)->shoot(victim);
+        }
+        else if (dynamic_cast<Cowboy *>(warrior) != nullptr){
+            dynamic_cast<Cowboy *>(warrior)->reload();
         }
     }
-    for (size_t i = 0; i < warriors.size() && victim -> isAlive(); i++) {
-        auto &temp_warrior = *warriors.at(i);
-        if (typeid(temp_warrior) != typeid(Cowboy)) {
-            current_ninja = dynamic_cast <Ninja*> (warriors.at(i));
-            if (current_ninja -> isAlive()) { // Only if the ninja is alive slash him.
-                if (current_ninja -> getLocation().distance(victim -> getLocation()) <= 1) {
-                    current_ninja -> slash(victim);
-                    if (!victim -> isAlive()) { // If the victim is dead, replace him.
-                        victim = closest_to_leader(other, _leader);
-                    }
-                }
-                else {
-                    current_ninja ->move(victim);
-                }
-            }
+    for (auto warrior : warriors){
+        if ((enemies->stillAlive() == 0) || (this->stillAlive() == 0)){
+            return;
+        }
+        if((warrior->isAlive() == false)){
+            continue;
+        }
+        if ((victim->isAlive() == false)){
+            victim = closest_to_leader(enemies, victim);
+        }
+        if (dynamic_cast<Ninja *>(warrior) != nullptr && warrior->distance(victim) < 1){
+            dynamic_cast<Ninja *>(warrior)->slash(victim);
+        }
+        else if (dynamic_cast<Ninja *>(warrior) != nullptr){
+            dynamic_cast<Ninja *>(warrior)->move(victim);
         }
     }
 }
+
 
 int Team::stillAlive(){
     int num_of_warriors_alive = 0;
