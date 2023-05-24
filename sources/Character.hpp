@@ -27,7 +27,7 @@ namespace ariel{
 
         int get_hit_points() const;
 
-        Point getLocation() const;
+        virtual Point getLocation() const;
 
         virtual std::string print(); //virtual for the ability to ovveride it
 

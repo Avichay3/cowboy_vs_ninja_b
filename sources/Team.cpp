@@ -12,7 +12,7 @@ Team::Team(Character *leader) : _leader(leader){
 }
 
 Team::~Team (){
-    for(int i = 0; i < warriors.size(); i++){
+    for(std::vector<Character*>::size_type i = 0; i < warriors.size(); i++){
         delete(warriors.at(i));
     }
 }
@@ -97,13 +97,13 @@ int Team::stillAlive(){
 }
 
 void Team::print(){
-    for (int i = warriors.size() - 1; i >= 0; --i){
-        if (Cowboy *cowboy = dynamic_cast<Cowboy*>(warriors.at(i))){ // Check if the character is a Cowboy
+    for (std::vector<Character*>::size_type i = warriors.size(); i > 0; --i){
+        if (Cowboy *cowboy = dynamic_cast<Cowboy*>(warriors.at(i-1))){ // Check if the character is a Cowboy
             if (cowboy->isAlive() == true ){
                 std::cout << cowboy->print() << std::endl; // Print the Cowboy details
             }
         }
-        else if (Ninja *ninja = dynamic_cast<Ninja*>(warriors.at(i))){ // Check if the character is a Ninja
+        else if (Ninja *ninja = dynamic_cast<Ninja*>(warriors.at(i-1))){ // Check if the character is a Ninja
             if (ninja->isAlive() == true ){
                 std::cout << ninja->print() << std::endl;
             }

@@ -35,7 +35,7 @@ std::string Character::getName() const{
 }
 
 Point Character::getLocation() const{
-    return _location;
+    return this->_location;
 }
 
 std::string Character::print(){

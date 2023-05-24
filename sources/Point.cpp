@@ -6,7 +6,7 @@ using namespace ariel;
 Point::Point(double x, double y): _x(x), _y(y){}; // constructor initialization list
 
 double Point::distance(const Point &other) const { 
-    double dist = sqrt(pow(this->_x - other.getX(), 2) + pow((this->_y - other.getY()),2));
+    double dist = sqrt(pow((this->_x - other.getX()), 2) + pow((this->_y - other.getY()),2));
     return dist;
 }
 
@@ -19,7 +19,7 @@ The function return the closest point to the destination point that found
 at most at the given distance from the point of the origin*/
 Point Point::moveTowards(Point &source, Point &destination, double distance){
     if(distance < 0)
-        throw ("distance cannot be smaller than 0");
+        throw std::invalid_argument("distance cannot be smaller than 0");
     double distance2 = source.distance(destination); // distance between source to destination
     if(distance2 <= distance)
         return destination;
