@@ -6,7 +6,7 @@
 namespace ariel{
     class Character{
     private:
-        Point &_location;
+        Point _location;
         int _hit_points;
         std::string _name;
         bool _is_in_team_already = false;
