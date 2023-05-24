@@ -17,7 +17,7 @@ namespace ariel{
 
         Character(std::string name, Point &location);
 
-        bool isAlive();
+        bool isAlive()const;
 
         double distance(Character *other);
 

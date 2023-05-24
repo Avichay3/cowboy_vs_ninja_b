@@ -4,7 +4,8 @@
 namespace ariel{
     class Ninja : public Character{ // inheritence
 
-        int _speed;
+        protected:
+            int _speed;
 
         public:
             Ninja(std::string name, Point location, int hit_points, int speed); //constructor

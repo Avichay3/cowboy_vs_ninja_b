@@ -6,10 +6,6 @@
 namespace ariel{
     class Team2 : public Team{ //inherit from Team class
 
-        private:
-            Character *_leader;
-            std::vector <Character *> warriors{10};
-
         public:
 
             Team2(Character *leader);

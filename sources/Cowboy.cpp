@@ -5,8 +5,7 @@ using namespace ariel;
 
 Cowboy::Cowboy(std::string name, Point location) : Character(name, location, 110), _num_of_bullets(6){} //initialization list
 
-void Cowboy::shoot(Character* other)
-{
+void Cowboy::shoot(Character* other){
     if ((this->isAlive() == false) || (!other->isAlive())){ // two different ways to say is alive is false
         throw std::runtime_error("Cowboy can't attack when he or his enemy is dead");
     }

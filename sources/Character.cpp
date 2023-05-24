@@ -8,7 +8,7 @@ _name(name), _location(location), _hit_points(hit_points) {} //first constructor
 
 Character::Character(std::string name, Point &location): _name(name), _location(location){}
 
-bool Character::isAlive() {
+bool Character::isAlive() const{
 	return this->_hit_points > 0;
 }
 

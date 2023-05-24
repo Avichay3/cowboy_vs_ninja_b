@@ -12,8 +12,9 @@ const int MAX_WARRIORS = 10;
 
 namespace ariel{
     class Team{
-        Character *_leader;
-        std::vector <Character *> warriors{10};
+        protected:
+            Character *_leader;
+            std::vector <Character *> warriors;
 
         public:
             Team(Character *leader); //constructor

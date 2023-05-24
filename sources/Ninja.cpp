@@ -12,7 +12,7 @@ void Ninja::move(Character *other){
     this->_location = Point::moveTowards(this->getLocation(),other->getLocation(),this->_speed);
 }
 
-void Ninja::slash(Character *other){
+void Ninja::slash(Character *other) {
     if((this->isAlive() == false) || other->isAlive() == false){
         throw std::runtime_error("The Ninja can't attack when he or his enemy dead");
     }

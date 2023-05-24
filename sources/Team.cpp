@@ -4,9 +4,10 @@ namespace ariel{
 
 Team::Team(Character *leader) : _leader(leader){
     this->warriors.clear(); //clear the vectors at first step
-    this->warriors = {leader};
-    if(this->_leader->IsInTeamAlready() == true){
-        throw std::runtime_error ("This leader is already in another team");
+    this->warriors.push_back(leader);
+    if (this->_leader->IsInTeamAlready())
+    {
+        throw std::runtime_error("This leader is already in another team");
     }
     this->_leader->setInTeam(true);
 }
