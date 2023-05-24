@@ -1,7 +1,14 @@
 #pragma once
 #include "Team.hpp"
+
+const int MAX_WARRIORS = 10;
+
 namespace ariel{
-    class Team2 : public Team{
+    class Team2 : public Team{ //inherit from Team class
+
+        private:
+            Character *_leader;
+            std::vector <Character *> warriors{10};
 
         public:
 
