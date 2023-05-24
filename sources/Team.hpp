@@ -14,6 +14,7 @@ namespace ariel{
     class Team{
         protected:
             Character *_leader;
+            size_t _warriors_count;
             std::vector <Character *> warriors;
 
         public:
@@ -25,7 +26,9 @@ namespace ariel{
             virtual void print();
             Character* closest_to_leader(Team *team, Character *other) ;
             std::vector<Character* > getWarriors();
-
+            Character* getLeader() const { return _leader; } //inline
+            void setLeader(Character* leader) { _leader = leader; } //inline
+            size_t getWarriorsCount () const{return _warriors_count;} // inline
 
     };
 }

@@ -25,7 +25,7 @@ bool Character::IsInTeamAlready() {
 
 void Character::hit(int hit_points){
     if(hit_points < 0){
-        throw ("hit points cannot be a negative number");
+        throw std::invalid_argument("hit points cannot be a negative number");
     }
     this->_hit_points = this->_hit_points - hit_points;
 }
