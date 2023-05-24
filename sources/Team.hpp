@@ -19,7 +19,7 @@ namespace ariel{
 
         public:
             Team(Character *leader); //constructor
-            ~Team(); //destructor for the team object
+            virtual ~Team(); //destructor for the team object
             void add(Character *);
             virtual void attack(Team *other);
             virtual int stillAlive();

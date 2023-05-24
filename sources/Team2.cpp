@@ -68,7 +68,7 @@ void Team2 :: attack (Team* enemy_team) {
 
 
 int Team2::stillAlive(){
-    int num_of_warriors_alive = 1;
+    int num_of_warriors_alive = 0;
     for(Character* warrior : warriors){
         if(warrior->isAlive() == true){
             num_of_warriors_alive++;    

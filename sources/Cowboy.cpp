@@ -15,8 +15,6 @@ void Cowboy::shoot(Character* other){
     if (this->hasboolets() == true){
         other->hit(10);
         this->_num_of_bullets--;
-    }else{
-        throw std::runtime_error("Cowboy has no bullets for shooting");
     }
 }
 
@@ -30,7 +28,10 @@ int Cowboy::getBullets() const{
 }
 
 void Cowboy::reload(){
-     if ((this->isAlive() == false)){
+    if ((this->isAlive() == false)){
+        throw std::runtime_error("Dead cowboy can't reload");
+    }
+    if(_hit_points <= 0){
         throw std::runtime_error("Dead cowboy can't reload");
     }
     this->_num_of_bullets = 6;

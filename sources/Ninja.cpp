@@ -13,7 +13,7 @@ void Ninja::move(Character *other){
 }
 
 void Ninja::slash(Character *other) {
-    if((this->isAlive() == false) || other->isAlive() == false){
+    if((this->isAlive() == false) || (other->isAlive() == false)){
         throw std::runtime_error("The Ninja can't attack when he or his enemy dead");
     }
     if(this == other){
