@@ -26,10 +26,10 @@ void SmartTeam::attack (Team* enemy_team) {
     Cowboy* current_cowboy = nullptr;
     Ninja* current_ninja = nullptr;
     Character* victim = nullptr;
-    // Iterate first over the ninjas since they have distance limit
+    // Iterate first, over the ninjas since they have distance limit
     for (size_t i = 0; i < getWarriorsCount(); i++) {
-        auto &temp_warrior = *getWarriors().at(i);
-        if (typeid(temp_warrior) != typeid(Cowboy)) {
+        auto &temp_warrior = *getWarriors().at(i); //get the type of warrior and reference to him
+        if (typeid(temp_warrior) != typeid(Cowboy)) { //Filter non-ninja warriors 
             current_ninja = dynamic_cast <Ninja*> (getWarriors().at(i));
             // Only if the ninja is alive, pick a target for him
             if (current_ninja -> isAlive()) {
@@ -50,8 +50,8 @@ void SmartTeam::attack (Team* enemy_team) {
     }
     // Iterate now over the cowboys.
     for (size_t i = 0; i < getWarriorsCount(); i++) {
-        auto &temp_warrior = *getWarriors().at(i);
-        if (typeid(temp_warrior) == typeid(Cowboy)) {
+        auto &temp_warrior = *getWarriors().at(i); //get the type of warrior and reference to him
+        if (typeid(temp_warrior) == typeid(Cowboy)) { //Filter non-cowboys warriors
             current_cowboy = dynamic_cast <Cowboy*> (getWarriors().at(i));
             // Only if the cowboy is alive, pick a target for him
             if (current_cowboy -> isAlive()) {
@@ -85,6 +85,7 @@ void SmartTeam::attack (Team* enemy_team) {
  * @return - A pointer to a valid victim or nullptr if all members are dead.
  */
 Character* SmartTeam :: locate_ninja_target (Ninja* ninja, Team* enemy_team) {
+    // The 3 next line of code is a potential victims for ninja.
     // Alive victim which is 1 meter away at most and has low hp.
     Character* victim_a = nullptr;
     // Alive victim which is at 1 < distance <= "speed" away and has low hp.
@@ -92,11 +93,11 @@ Character* SmartTeam :: locate_ninja_target (Ninja* ninja, Team* enemy_team) {
     // Alive victim which is more than "speed" distance away but closer and has low hp.
     Character* victim_c = nullptr;
     // Save the minimum distance for c type victims.
-    double min_distance_c = numeric_limits <double> :: max();
+    double min_distance_c = numeric_limits <double> :: max(); //initialized with the maximum value possible 
     // Save the low hp for each type of victim.
-    double low_hp_a = numeric_limits <double> :: max();
-    double low_hp_b = numeric_limits <double> :: max();
-    double low_hp_c = numeric_limits <double> :: max();
+    double low_hiting_points_a = numeric_limits <double> :: max(); //initialized with the maximum value possible 
+    double low_hiting_points_b = numeric_limits <double> :: max();
+    double low_hiting_points_c = numeric_limits <double> :: max();
     // Current distance for a warrior in team.
     double dist = 0;
     // Current hp for a warrior in team.
@@ -107,22 +108,29 @@ Character* SmartTeam :: locate_ninja_target (Ninja* ninja, Team* enemy_team) {
         if (enemy_team -> getWarriors().at(i) -> isAlive()) {
             // Compute distance and hp.
             dist = ninja -> distance(enemy_team -> getWarriors().at(i));
-            hp = enemy_team -> getWarriors().at(i)->get_hit_points();
+            hp = enemy_team -> getWarriors().at(i)->get_hit_points(); //Retrieves the hiting_points value
+            //Based on the distance and hiting_points values, we categorizes the victim into three types:
             // Type A victim.
             if (dist <= 1) {
-                // Update type A victim and low hp if necessary.
-                if ((low_hp_a > NINJA_DAMAGE && hp < low_hp_a) ||
-                    (low_hp_a <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hp_a)) {
-                    low_hp_a = hp;
+                // Update type A victim and low hiting points if necessary.
+                //This condition checks if the current victim hiting_points(hp) is lower than the current lowest hp value.
+                //Also we check if the current lowest hp value is greater than the NINJA_DAMAGE threshold which is 40.
+                if ((low_hiting_points_a > NINJA_DAMAGE && hp < low_hiting_points_a) ||  
+                    
+                    //If current lowest hp value is already less than or equal to the NINJA_DAMAGE threshold which is 40.
+                    (low_hiting_points_a <= NINJA_DAMAGE && hp <= NINJA_DAMAGE)) {
+                        //If both conditions are true, it means that the current victim has a lower 
+                        //hp value than the previous type A victims, making it a better target.
+                    low_hiting_points_a = hp;
                     victim_a = enemy_team -> getWarriors().at(i);
                 }
             }
             // Type B victim.
             else if (dist <= ninja -> getSpeed()) {
                 // Update type B victim and low hp if necessary.
-                if ((low_hp_b > NINJA_DAMAGE && hp < low_hp_b) ||
-                    (low_hp_b <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hp_b)) {
-                    low_hp_b = hp;
+                if ((low_hiting_points_b > NINJA_DAMAGE && hp < low_hiting_points_b) ||
+                    (low_hiting_points_b <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hiting_points_b)) {
+                    low_hiting_points_b = hp;
                     victim_b = enemy_team -> getWarriors().at(i);
                 }
             }
@@ -134,15 +142,16 @@ Character* SmartTeam :: locate_ninja_target (Ninja* ninja, Team* enemy_team) {
                     victim_c = enemy_team -> getWarriors().at(i);
                 }
                 // If we found a victim within the same distance with low hp.
-                else if ((dist == min_distance_c) && ((low_hp_c > NINJA_DAMAGE && hp < low_hp_c) ||
-                         (low_hp_c <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hp_b))) {
-                    low_hp_c = hp;
+                else if ((dist == min_distance_c) && ((low_hiting_points_c > NINJA_DAMAGE && hp < low_hiting_points_c) ||
+                         (low_hiting_points_c <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hiting_points_b))) {
+                    low_hiting_points_c = hp;
                     victim_c = enemy_team -> getWarriors().at(i);
                 }
             }
         }
     }
     // We would prefer to return A/B/C victim in that order based on their existence.
+    // For ensure that the function returns the most suitable victim based on the different victim types 
     if (victim_a != nullptr) { return victim_a; }
     if (victim_b != nullptr) { return victim_b; }
     if (victim_c != nullptr) { return victim_c; }
