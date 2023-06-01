@@ -17,5 +17,7 @@ namespace ariel{
 
             std::string print() override;
 
+            int getSpeed () const;
+
     };
 }

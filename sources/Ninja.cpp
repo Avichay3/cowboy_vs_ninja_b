@@ -34,5 +34,9 @@ std::string Ninja::print() {
     return print;
 }
 
+int Ninja :: getSpeed ()const { 
+    return _speed; 
+}
+
 
 

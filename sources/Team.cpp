@@ -140,6 +140,6 @@ Character* Team::closest_to_leader(Team* team , Character *other){
 
 
 std::vector<Character* > Team::getWarriors(){
-    return this->warriors;
+    return warriors;
 }
 }
