@@ -12,6 +12,6 @@ namespace ariel {
         static Character* Locate_cowboy_target (Team*);
 
         // Print method.
-        void print() const override;
+        void print() override;
     };
 }

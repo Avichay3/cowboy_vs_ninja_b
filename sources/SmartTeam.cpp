@@ -5,7 +5,6 @@ using namespace ariel;
 
 /**
  * Attacks enemy_team with a smart strategy.
- * @param enemy_team - The team we attack.
  */
 void SmartTeam :: attack (Team* enemy_team) {
     // Check if the enemy is null.
@@ -17,11 +16,11 @@ void SmartTeam :: attack (Team* enemy_team) {
         throw runtime_error("Team can't attack itself!\n");
     }
     // If this team or the enemy team is dead, throw.
-    if (stillAlive() == 0 || enemy_team -> stillAlive() == 0) {
+    if (stillAlive() == 0 || enemy_team->stillAlive() == 0) {
         throw runtime_error("This team and the enemy team must be alive!\n");
     }
     // If the current leader is dead, assign a new leader.
-    if (!getLeader() -> isAlive()) {
+    if (!getLeader()->isAlive()) {
         setLeader(closest_to_leader(this, getLeader()));
     }
     Cowboy* current_cowboy = nullptr;
@@ -61,7 +60,9 @@ void SmartTeam :: attack (Team* enemy_team) {
                     // Choose a victim for the cowboy.
                     victim = Locate_cowboy_target(enemy_team);
                     // If the enemy team is dead, break.
-                    if (victim == nullptr) { break; }
+                    if (victim == nullptr) { 
+                        break; 
+                    }
                     // Shoot the victim.
                     current_cowboy -> shoot(victim);
                 }
@@ -180,7 +181,7 @@ Character* SmartTeam :: Locate_cowboy_target (Team* enemy_team) {
 /**
  * prints all characters in the team (the order doesn't matter).
  */
-void SmartTeam :: print () const {
+void SmartTeam :: print (){
     for (size_t i = 0; i < getWarriorsCount(); i++) {
         std::cout << warriors.at(i) -> print() << endl;
     }

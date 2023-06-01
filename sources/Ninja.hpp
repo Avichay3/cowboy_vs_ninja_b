@@ -1,6 +1,8 @@
 #pragma once
 #include "Character.hpp"
 
+const int NINJA_DAMAGE = 40;
+
 namespace ariel{
     class Ninja : public Character{ // inheritence
 
