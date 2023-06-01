@@ -6,7 +6,7 @@ using namespace ariel;
 /**
  * Attacks enemy_team with a smart strategy.
  */
-void SmartTeam :: attack (Team* enemy_team) {
+void SmartTeam::attack (Team* enemy_team) {
     // Check if the enemy is null.
     if (enemy_team == nullptr) {
         throw invalid_argument("Enemy team can't be null!\n");
@@ -26,22 +26,22 @@ void SmartTeam :: attack (Team* enemy_team) {
     Cowboy* current_cowboy = nullptr;
     Ninja* current_ninja = nullptr;
     Character* victim = nullptr;
-    // Iterate first over the ninjas since they have distance limit.
+    // Iterate first over the ninjas since they have distance limit
     for (size_t i = 0; i < getWarriorsCount(); i++) {
         auto &temp_warrior = *getWarriors().at(i);
         if (typeid(temp_warrior) != typeid(Cowboy)) {
             current_ninja = dynamic_cast <Ninja*> (getWarriors().at(i));
-            // Only if the ninja is alive, pick a target for him.
+            // Only if the ninja is alive, pick a target for him
             if (current_ninja -> isAlive()) {
-                // Choose a victim for the ninja.
+                // Choose a victim for the ninja
                 victim = locate_ninja_target(current_ninja, enemy_team);
-                // If the enemy team is dead, break.
+                // If the enemy team is dead, break
                 if (victim == nullptr) { break; }
-                // If the ninja is close, slash the victim.
+                // If the ninja is close, slash the victim
                 if (current_ninja -> distance(victim) <= 1) {
                     current_ninja -> slash(victim);
                 }
-                // Else, move ninja towards victim.
+                // Else, move ninja towards victim
                 else {
                     current_ninja -> move(victim);
                 }
@@ -53,9 +53,9 @@ void SmartTeam :: attack (Team* enemy_team) {
         auto &temp_warrior = *getWarriors().at(i);
         if (typeid(temp_warrior) == typeid(Cowboy)) {
             current_cowboy = dynamic_cast <Cowboy*> (getWarriors().at(i));
-            // Only if the cowboy is alive, pick a target for him.
+            // Only if the cowboy is alive, pick a target for him
             if (current_cowboy -> isAlive()) {
-                // If the cowboy has bullets.
+                // If the cowboy has bullets
                 if (current_cowboy -> hasboolets()) {
                     // Choose a victim for the cowboy.
                     victim = Locate_cowboy_target(enemy_team);
@@ -76,7 +76,7 @@ void SmartTeam :: attack (Team* enemy_team) {
 }
 
 /**
- * For a ninja, we would try to look for a victim with low hp which we can hit right away (meaning without moving),
+ * For a ninja, we would try to look for a victim with low hiting points which we can hit right away (meaning without moving),
  * or if we can't right away, we will prefer in one move and than slash (distance <= "speed").
  * Otherwise, the victim is far so we will want him to be close as possible (reduce move() calls).
  * We define "low hp" as the lowest hp closest to 40. We want to leave those with the real lowest hp to the cowboys.
