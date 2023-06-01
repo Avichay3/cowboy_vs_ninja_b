@@ -1,123 +1,187 @@
 #include "SmartTeam.hpp"
 #include <limits>
+using namespace std;
 using namespace ariel;
-/**
 
-Constructor for the SmartTeam class.
-Creates a new team with the given character as the leader and uses Team constructor as it's the base class.
-@param character A pointer to the character to be set as the leader of the team.
-@throws runtime_error if the leader character is already in another team.
-*/
-SmartTeam::SmartTeam(Character *leader) : Team(leader)
-{
-}
 /**
- * Performs an attack on an enemy team.
- *
- * Throws an exception if:
- * - The enemy team is null.
- * - The current team has no warriors.
- * - The enemy team has no warriors.
- * - The enemy team is the same as the current team.
- *
- * @param enemies A pointer to the enemy team to be attacked.
- * @throws std::invalid_argument if enemies is null or has no characters, std::runtime_error if the current team has no warriors,
- *         std::invalid_argument if the enemy team is the same as the current team.
+ * Attacks enemy_team with a smart strategy.
+ * @param enemy_team - The team we attack.
  */
-void SmartTeam::attack(Team *enemies){
-    if (enemies == nullptr){
-        throw std::invalid_argument("enemies must be with at least one character");
+void SmartTeam :: attack (Team* enemy_team) {
+    // Check if the enemy is null.
+    if (enemy_team == nullptr) {
+        throw invalid_argument("Enemy team can't be null!\n");
     }
-
-    if (this->stillAlive() == 0){
-        throw std::invalid_argument("Team can't attack with no warriors");
+    // Check if this team trying to attack itself.
+    if (this == enemy_team) {
+        throw runtime_error("Team can't attack itself!\n");
     }
-
-    if (enemies->stillAlive() == 0){
-        throw std::runtime_error("Can't attack team with no warriors");
+    // If this team or the enemy team is dead, throw.
+    if (stillAlive() == 0 || enemy_team -> stillAlive() == 0) {
+        throw runtime_error("This team and the enemy team must be alive!\n");
     }
-
-    if (enemies == this){
-        throw std::invalid_argument("There is no internal kills");
+    // If the current leader is dead, assign a new leader.
+    if (!getLeader() -> isAlive()) {
+        setLeader(closest_to_leader(this, getLeader()));
     }
-
-    // Check if leader is alive
-    if ((this->getLeader()->isAlive()) == false){
-        this->getLeader()->setInTeam(false);
-        this->setLeader(closest_to_leader(this, this->getLeader()));
-    }
-    // Find closest living enemy to leader
-    if (!(enemies->getLeader()->isAlive()))
-    {
-        enemies->getLeader()->setInTeam(false);
-        enemies->setLeader(closest_to_leader(enemies, enemies->getLeader()));
-    }
-    if ((enemies->getLeader() == nullptr) || (this->getLeader() == nullptr))
-    {
-        return;
-    }
-    // the closer enemy to this team
-    Character* closest_enemy = findClosestCharacters(this, enemies)[1];
-    if (!closest_enemy){
-        return;
-    }
-    // Attack victim with all living members
-    for (auto warrior : this->getWarriors())
-    {
-        if ((enemies->stillAlive() == 0) || (this->stillAlive() == 0)){
-            return;
-        }
-
-        if (!(warrior->isAlive())){
-            continue;
-        }
-
-        if (!(closest_enemy->isAlive())){
-            closest_enemy = findClosestCharacters(this, enemies)[1];
-        }
-
-        if (dynamic_cast<Cowboy *>(warrior) != nullptr && dynamic_cast<Cowboy *>(warrior)->getBullets() > 0){
-            // Cowboy with bullets shoots closest enemy
-            dynamic_cast<Cowboy *>(warrior)->shoot(closest_enemy);
-        }
-
-        else if (dynamic_cast<Cowboy *>(warrior) != nullptr){
-            // Cowboy without bullets loads gun
-            dynamic_cast<Cowboy *>(warrior)->reload();
-        }
-
-        else if (dynamic_cast<Ninja *>(warrior) != nullptr && warrior->distance(closest_enemy) <= 1){
-            // Ninja within 1 meter of closest enemy kills closest enemy
-            dynamic_cast<Ninja *>(warrior)->slash(closest_enemy);
-        }
-        else if (dynamic_cast<Ninja *>(warrior) != nullptr){
-            // Ninja further than 1 meter from closest enemy moves closer
-            dynamic_cast<Ninja *>(warrior)->move(closest_enemy);
-        }
-    }
-}
-/**
- * Finds the closest characters between the attacker team and the enemy team.
- *
- * @param attackerTeam A pointer to the attacker team.
- * @param enemyTeam A pointer to the enemy team.
- * @return A vector of pointers to the closest characters, with size 2.
- */
-std::vector<Character*> SmartTeam::findClosestCharacters(Team* attackerTeam, Team* enemyTeam) {
-std::vector<Character*> closest_characters{2};
-
-    double minDistance = std::numeric_limits<double>::max();
-
-
-    for (auto attacker : attackerTeam->getWarriors()) {
-        for (auto enemy : enemyTeam->getWarriors()) {
-            double dist = attacker->distance(enemy);
-            if (dist < minDistance && attacker->isAlive() && enemy->isAlive()) {
-                minDistance = dist;
-                closest_characters.at(0) = attacker;
-                closest_characters.at(1) = enemy;
+    Cowboy* current_cowboy = nullptr;
+    Ninja* current_ninja = nullptr;
+    Character* victim = nullptr;
+    // Iterate first over the ninjas since they have distance limit.
+    for (size_t i = 0; i < getWarriorsCount(); i++) {
+        auto &temp_warrior = *getWarriors().at(i);
+        if (typeid(temp_warrior) != typeid(Cowboy)) {
+            current_ninja = dynamic_cast <Ninja*> (getWarriors().at(i));
+            // Only if the ninja is alive, pick a target for him.
+            if (current_ninja -> isAlive()) {
+                // Choose a victim for the ninja.
+                victim = locate_ninja_target(current_ninja, enemy_team);
+                // If the enemy team is dead, break.
+                if (victim == nullptr) { break; }
+                // If the ninja is close, slash the victim.
+                if (current_ninja -> distance(victim) <= 1) {
+                    current_ninja -> slash(victim);
+                }
+                // Else, move ninja towards victim.
+                else {
+                    current_ninja -> move(victim);
+                }
             }
         }
     }
-    return closest_characters;
+    // Iterate now over the cowboys.
+    for (size_t i = 0; i < getWarriorsCount(); i++) {
+        auto &temp_warrior = *getWarriors().at(i);
+        if (typeid(temp_warrior) == typeid(Cowboy)) {
+            current_cowboy = dynamic_cast <Cowboy*> (getWarriors().at(i));
+            // Only if the cowboy is alive, pick a target for him.
+            if (current_cowboy -> isAlive()) {
+                // If the cowboy has bullets.
+                if (current_cowboy -> hasboolets()) {
+                    // Choose a victim for the cowboy.
+                    victim = Locate_cowboy_target(enemy_team);
+                    // If the enemy team is dead, break.
+                    if (victim == nullptr) { break; }
+                    // Shoot the victim.
+                    current_cowboy -> shoot(victim);
+                }
+                // Else, reload the weapon.
+                else {
+                    current_cowboy -> reload();
+                }
+            }
+        }
+    }
+}
+
+/**
+ * For a ninja, we would try to look for a victim with low hp which we can hit right away (meaning without moving),
+ * or if we can't right away, we will prefer in one move and than slash (distance <= "speed").
+ * Otherwise, the victim is far so we will want him to be close as possible (reduce move() calls).
+ * We define "low hp" as the lowest hp closest to 40. We want to leave those with the real lowest hp to the cowboys.
+ * @param ninja - The current ninja attacker.
+ * @param enemy_team - The team we will choose a victim from.
+ * @return - A pointer to a valid victim or nullptr if all members are dead.
+ */
+Character* SmartTeam :: locate_ninja_target (Ninja* ninja, Team* enemy_team) {
+    // Alive victim which is 1 meter away at most and has low hp.
+    Character* victim_a = nullptr;
+    // Alive victim which is at 1 < distance <= "speed" away and has low hp.
+    Character* victim_b = nullptr;
+    // Alive victim which is more than "speed" distance away but closer and has low hp.
+    Character* victim_c = nullptr;
+    // Save the minimum distance for c type victims.
+    double min_distance_c = numeric_limits <double> :: max();
+    // Save the low hp for each type of victim.
+    double low_hp_a = numeric_limits <double> :: max();
+    double low_hp_b = numeric_limits <double> :: max();
+    double low_hp_c = numeric_limits <double> :: max();
+    // Current distance for a warrior in team.
+    double dist = 0;
+    // Current hp for a warrior in team.
+    double hp = 0;
+    // Iterate over the enemy team and pick a victim.
+    for (size_t i = 0; i < enemy_team -> getWarriorsCount(); i++) {
+        // Only if this enemy is alive, check him.
+        if (enemy_team -> getWarriors().at(i) -> isAlive()) {
+            // Compute distance and hp.
+            dist = ninja -> distance(enemy_team -> getWarriors().at(i));
+            hp = enemy_team -> getWarriors().at(i)->get_hit_points();
+            // Type A victim.
+            if (dist <= 1) {
+                // Update type A victim and low hp if necessary.
+                if ((low_hp_a > NINJA_DAMAGE && hp < low_hp_a) ||
+                    (low_hp_a <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hp_a)) {
+                    low_hp_a = hp;
+                    victim_a = enemy_team -> getWarriors().at(i);
+                }
+            }
+            // Type B victim.
+            else if (dist <= ninja -> getSpeed()) {
+                // Update type B victim and low hp if necessary.
+                if ((low_hp_b > NINJA_DAMAGE && hp < low_hp_b) ||
+                    (low_hp_b <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hp_b)) {
+                    low_hp_b = hp;
+                    victim_b = enemy_team -> getWarriors().at(i);
+                }
+            }
+            // Type C victim.
+            else {
+                // Update type C victim and min distance if necessary.
+                if (dist < min_distance_c) {
+                    min_distance_c = dist;
+                    victim_c = enemy_team -> getWarriors().at(i);
+                }
+                // If we found a victim within the same distance with low hp.
+                else if ((dist == min_distance_c) && ((low_hp_c > NINJA_DAMAGE && hp < low_hp_c) ||
+                         (low_hp_c <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hp_b))) {
+                    low_hp_c = hp;
+                    victim_c = enemy_team -> getWarriors().at(i);
+                }
+            }
+        }
+    }
+    // We would prefer to return A/B/C victim in that order based on their existence.
+    if (victim_a != nullptr) { return victim_a; }
+    if (victim_b != nullptr) { return victim_b; }
+    if (victim_c != nullptr) { return victim_c; }
+    // Team is dead. Return nullptr.
+    return nullptr;
+}
+
+/**
+ * Chooses a victim for a cowboy. The victim will be alive and with least amount of hp,
+ * since cowboy doesn't care about distance and we want to cause more death to the enemy team per attack.
+ * @param enemy_team  - The team we will choose a victim from.
+ * @return - A pointer to a valid victim or nullptr if all members are dead.
+ */
+Character* SmartTeam :: Locate_cowboy_target (Team* enemy_team) {
+    // The victim we will return.
+    Character* victim = nullptr;
+    // Save the minimum hp.
+    double min_hp = numeric_limits <double> :: max();
+    // Current hp for each of the warriors in team.
+    double hp = 0;
+    // Iterate over the enemy team and pick a victim.
+    for (size_t i = 0; i < enemy_team -> getWarriorsCount(); i++) {
+        // Only if this enemy is alive, check him.
+        if (enemy_team -> getWarriors().at(i) -> isAlive()) {
+            hp = enemy_team -> getWarriors().at(i)->get_hit_points();
+            // Update victim if needed.
+            if (hp < min_hp) {
+                min_hp = hp;
+                victim = enemy_team -> getWarriors().at(i);
+            }
+        }
+    }
+    return victim;
+}
+
+/**
+ * prints all characters in the team (the order doesn't matter).
+ */
+void SmartTeam :: print () const {
+    for (size_t i = 0; i < getWarriorsCount(); i++) {
+        std::cout << warriors.at(i) -> print() << endl;
+    }
 }

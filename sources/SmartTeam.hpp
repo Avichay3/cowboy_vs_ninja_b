@@ -1,17 +1,17 @@
-#pragma once
 #include "Team.hpp"
-#include <vector>
-#include "Team.hpp"
-#include <vector>
 
-namespace ariel
-{
-    class SmartTeam : public Team
-    {
+namespace ariel {
+    class SmartTeam : public Team {
+
     public:
-        SmartTeam(Character *character);
-        ~SmartTeam() = default;
-        void attack(Team *enemies) override;
-        std::vector<Character*> findClosestCharacters(Team* attackerTeam, Team* enemyTeam);
+        SmartTeam (Character* leader) : Team(leader) {}
+
+        // Methods.
+        void attack (Team* enemy_team) override;
+        static Character* locate_ninja_target (Ninja*, Team*);
+        static Character* Locate_cowboy_target (Team*);
+
+        // Print method.
+        void print() const override;
     };
 }
