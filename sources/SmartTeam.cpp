@@ -152,9 +152,7 @@ Character* SmartTeam :: locate_ninja_target (Ninja* ninja, Team* enemy_team) {
 
 /**
  * Chooses a victim for a cowboy. The victim will be alive and with least amount of hp,
- * since cowboy doesn't care about distance and we want to cause more death to the enemy team per attack.
- * @param enemy_team  - The team we will choose a victim from.
- * @return - A pointer to a valid victim or nullptr if all members are dead.
+ * since cowboy doesn't care about distance and we want to cause more death to the enemy team per attack. 
  */
 Character* SmartTeam :: Locate_cowboy_target (Team* enemy_team) {
     // The victim we will return.
@@ -181,7 +179,7 @@ Character* SmartTeam :: Locate_cowboy_target (Team* enemy_team) {
 /**
  * prints all characters in the team (the order doesn't matter).
  */
-void SmartTeam :: print (){
+void SmartTeam::print (){
     for (size_t i = 0; i < getWarriorsCount(); i++) {
         std::cout << warriors.at(i) -> print() << endl;
     }
