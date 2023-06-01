@@ -76,10 +76,10 @@ void SmartTeam::attack (Team* enemy_team) {
 }
 
 /**
- * For a ninja, we would try to look for a victim with low hiting points which we can hit right away (meaning without moving),
+ * For a ninja, we would try to look for a victim with low hiting points which we can hit without moving.
  * or if we can't right away, we will prefer in one move and than slash (distance <= "speed").
  * Otherwise, the victim is far so we will want him to be close as possible (reduce move() calls).
- * We define "low hp" as the lowest hp closest to 40. We want to leave those with the real lowest hp to the cowboys.
+ * We define "low hp" as the lowest hp closest to 40.
  * @param ninja - The current ninja attacker.
  * @param enemy_team - The team we will choose a victim from.
  * @return - A pointer to a valid victim or nullptr if all members are dead.
@@ -125,18 +125,20 @@ Character* SmartTeam :: locate_ninja_target (Ninja* ninja, Team* enemy_team) {
                     victim_a = enemy_team -> getWarriors().at(i);
                 }
             }
-            // Type B victim.
-            else if (dist <= ninja -> getSpeed()) {
-                // Update type B victim and low hp if necessary.
+            // Type B victim
+            else if (dist <= ninja -> getSpeed()) { 
+                //checks if the distance between the ninja and the current enemy is less than 
+                //or equal to the ninja speed.
+                //Means that the current enemy is within the ninja range of movement.
+                //Update type B victim and low hp if necessary.
                 if ((low_hiting_points_b > NINJA_DAMAGE && hp < low_hiting_points_b) ||
                     (low_hiting_points_b <= NINJA_DAMAGE && hp <= NINJA_DAMAGE && hp > low_hiting_points_b)) {
                     low_hiting_points_b = hp;
                     victim_b = enemy_team -> getWarriors().at(i);
                 }
             }
-            // Type C victim.
-            else {
-                // Update type C victim and min distance if necessary.
+            // Type C victim
+            else {// Update type C victim and min distance if necessary.
                 if (dist < min_distance_c) {
                     min_distance_c = dist;
                     victim_c = enemy_team -> getWarriors().at(i);
@@ -186,7 +188,7 @@ Character* SmartTeam :: Locate_cowboy_target (Team* enemy_team) {
 }
 
 /**
- * prints all characters in the team (the order doesn't matter).
+ * prints all characters in the team (order doesn't matter).
  */
 void SmartTeam::print (){
     for (size_t i = 0; i < getWarriorsCount(); i++) {
